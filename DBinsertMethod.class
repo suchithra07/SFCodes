@@ -1,1 +1,43 @@
-test DB  ggggh
+//insert using database method
+APEX_Customer__c objCust=new APEX_Customer__c();
+objCust.Name='Test';
+insert objCust;
+
+//add 2 invoice rec
+//create a list for invoice
+List<APEX_Invoice__c> InvoiceListToInsert=new List<APEX_Invoice__c>();
+
+//first invoice rec
+APEX_Invoice__c objNewInvoice=new APEX_Invoice__c();
+objNewInvoice.APEX_Status__c='Pending';
+objNewInvoice.APEX_Customer__c=objCust.id;
+objNewInvoice.APEX_Amount_Paid__c=1000;
+InvoiceListToInsert.add(objNewInvoice);
+
+//create second invoice
+APEX_Invoice__c objNewInvoice2=new APEX_Invoice__c();
+objNewInvoice2.APEX_Status__c='Pending';
+objNewInvoice.APEX_Amount_Paid__c=700;
+InvoiceListToInsert.add(objNewInvoice2);
+
+Database.saveResult[] srList=Database.insert(InvoiceListToInsert,false);
+for(DataBase,SaveResult sr:srList)
+{
+    if(sr.isSuccess())
+    {
+   	 	System.debug('Successfully inserted the invoice'+sr.getId);
+    }
+    else
+    {
+        for(DataBase.Error objError:getErrors())
+        {
+            system.debug('The following error has occurred');
+            System.debug(objError.getStatusCode()+' : '+objError.getmessage());
+            System.debug('Invoice object fields that are affected '+objError.getFields());
+        }
+    }
+}
+
+
+
+
